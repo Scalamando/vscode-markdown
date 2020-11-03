@@ -85,10 +85,10 @@ function updateSectionCustomIds() {
         
         let headingText = entry.text;
         
-        const customId = headingText.replace(/^([\W\d]+)([\w]*) *({#[\s\S]*})?/, (_, _g1, g2, _g3) => `${g2}`).trim().replace(' ', '').toLowerCase();
+        const customId = headingText.replace(/^([\W\D]+) *([\d\.]*) +(.*?) +({#[\s\S]*})?/, (_, _g1, _g2, g3, _g4) => `${g3}`).trim().replace(/[\*\_]+/g, '').replace(' ', '-').toLowerCase();
 
         const lineText = doc.lineAt(lineNum).text;
-        const newText = lineText.replace(/^([\W\d]+)([\w]*) *({#[\s\S]*})?/, (_, g1, g2, _g3) => `${g1}${g2} {#${customId}}`);
+        const newText = lineText.replace(/^([\W\D]+) *([\d\.]*) +(.*?) +({#[\s\S]*})?/, (_, g1, g2, g3, _g4) => `${g1}${g2}${g3} {#${customId}}`);
         edit.replace(doc.uri, doc.lineAt(lineNum).range, newText);
     });
 
