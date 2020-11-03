@@ -15,6 +15,7 @@ export function activate(context: ExtensionContext) {
     context.subscriptions.push(
         commands.registerCommand('markdown.extension.toc.create', createToc),
         commands.registerCommand('markdown.extension.toc.update', updateToc),
+        commands.registerCommand('markdown.extension.toc.updateSecIds', updateSectionCustomIds),
         commands.registerCommand('markdown.extension.toc.addSecNumbers', addSectionNumbers),
         commands.registerCommand('markdown.extension.toc.removeSecNumbers', removeSectionNumbers),
         workspace.onWillSaveTextDocument(onWillSave),
@@ -65,6 +66,33 @@ async function updateToc() {
             }
         }
     });
+}
+
+function updateSectionCustomIds() {
+    const editor = window.activeTextEditor;
+    if (!isMdEditor(editor)) {
+        return;
+    }
+    const doc = editor.document;
+
+    loadTocConfig();
+    const toc = buildToc(editor.document);
+    if (toc === null || toc === undefined || toc.length < 1) return;
+
+    let edit = new WorkspaceEdit();
+    toc.forEach(entry => {
+        const lineNum = entry.lineNum;
+        
+        let headingText = entry.text;
+        
+        const customId = headingText.replace(/^([\W\d]+)([\w]*) *({#[\s\S]*})?/, (_, _g1, g2, _g3) => `${g2}`).trim().replace(' ', '').toLowerCase();
+
+        const lineText = doc.lineAt(lineNum).text;
+        const newText = lineText.replace(/^([\W\d]+)([\w]*) *({#[\s\S]*})?/, (_, g1, g2, _g3) => `${g1}${g2} {#${customId}}`);
+        edit.replace(doc.uri, doc.lineAt(lineNum).range, newText);
+    });
+
+    return workspace.applyEdit(edit);
 }
 
 function addSectionNumbers() {
