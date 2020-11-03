@@ -194,6 +194,8 @@ async function generateTocText(doc: TextDocument): Promise<string> {
             let headingText = entry.text.replace(/\[([^\]]*)\]\([^\)]*\)/, (_, g1) => g1);
             //// `[text][label]` → `text`
             headingText = headingText.replace(/\[([^\]]*)\]\[[^\)]*\]/, (_, g1) => g1);
+            //// `text {#custom-id}`
+            headingText = headingText.replace(/({#\s*\S*})/, '');
 
             let slug = slugify(entry.text);
 
@@ -376,7 +378,7 @@ export function buildToc(doc: TextDocument) {
             const matches = /^(#+) (.*)/.exec(lineText);
             const entry = {
                 level: matches[1].length,
-                text: matches[2].replace(/#+$/, '').replace(/{\s*\S*}/, '').trim(),
+                text: matches[2].replace(/#+$/, '').trim(),
                 lineNum: index,
             };
             return entry;
