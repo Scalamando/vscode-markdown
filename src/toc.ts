@@ -84,7 +84,7 @@ function updateSectionCustomIds() {
         const lineNum = entry.lineNum;
         
         let customId = entry.text.replace(/^(#+) +([\d\.]*\s+)?([\*\_\w\d\s]*) *({#[\s\S]*})?/, (_, _g1, _g2, g3, _g4) => `${g3}`);
-        customId = customId.trim().replace(/[\*\_]+/g, '').replace(/' '/g, '-').toLowerCase();
+        customId = customId.trim().replace(/[\*\_]+/g, '').replace(/\s/g, '-').toLowerCase();
 
         const lineText = doc.lineAt(lineNum).text;
         const newText = lineText.replace(/^([^{]*)({#[\s\S]*})?/, (_, g1, g2) => `${g1.trim()} {#${customId}}`);
