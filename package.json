@@ -43,6 +43,11 @@
                 "category": "Markdown All in One"
             },
             {
+                "command": "markdown.extension.toc.updateSecIds",
+                "title": "%command.toc.updateSecIds.title%",
+                "category": "Markdown All in One"
+            },
+            {
                 "command": "markdown.extension.toc.addSecNumbers",
                 "title": "%command.toc.addSecNumbers.title%",
                 "category": "Markdown All in One"
